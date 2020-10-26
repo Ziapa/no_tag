@@ -1,7 +1,7 @@
 import React, {ChangeEvent, useState} from 'react';
 import './App.css';
-import {addCoil, addValueLength, addValueSection, StoreType} from "./Redux/Store";
-
+import {addCoil, addValueLength, addValueSection, StoreType, changeLengthValue} from "./Redux/Store";
+import {EditableSpan} from "./EditableSpan";
 
 
 type AppPropsType = {
@@ -28,10 +28,10 @@ function App(props: AppPropsType) {
     const add = () => {
         if (state.newLength.trim() && state.newSection.trim()) {
             addCoil()
-        } else if (!state.newLength.trim()){
-            setErrorLength("need length")
+        } else if (!state.newLength.trim()) {
+            setErrorLength("Необходимо ввести длину")
         } else if (!state.newSection.trim()) {
-            setErrorSection("need section")
+            setErrorSection("Необходимо ввести сечение")
         }
     }
 
@@ -40,29 +40,35 @@ function App(props: AppPropsType) {
 
     return (
         <div>
-           <input value={state.newLength}
+            <input value={state.newLength}
                    onChange={changeLength}
                    placeholder={"Длина"}
-                   type="text"/>
+                   type="number"/>
 
             <input value={state.newSection}
                    onChange={changeSection}
                    placeholder={"Сечение"}
-                   type="text"/>
+                   type="number"/>
             <button onClick={add}>Добавить</button>
             {errorLength && <div className={"error-length"}>{errorLength}</div>}
             {errorSection && <div className={"error-section"}>{errorSection}</div>}
 
             {state.coil.map(coil => {
+            const   changeValue = (title:string) => {
+                changeLengthValue(coil._id, title)
+            }
+
                 return (
                     <div key={coil._id}>
 
-                        <span>
-                            {`Длина: ${coil.length}---- `}
-                        </span>
-                        <span>
-                            {` ----Сечение ${coil.section}`}
-                        </span>
+                        <EditableSpan
+                            changeValue={changeValue}
+                            title={"Длина"}
+                            value={coil.length}/>
+                        <EditableSpan
+                            changeValue={changeValue}
+                            title={"Сечение"}
+                            value={coil.section}/>
                     </div>
                 )
             })}
@@ -71,5 +77,6 @@ function App(props: AppPropsType) {
         </div>
     );
 }
+
 
 export default App;

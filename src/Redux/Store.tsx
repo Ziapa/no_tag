@@ -49,7 +49,17 @@ export const addValueSection = (text:string) => {
 export const addCoil = () => {
     const newCoil: CoilType = {_id: v1(), section: store._state.newSection, length: store._state.newLength}
     store._state.coil.push(newCoil)
+    store._state.newLength = ""
+    store._state.newSection = ""
     rerenderEntireTree()
+}
+
+export const changeLengthValue = (coilID:string, title:string) => {
+    const coil = store._state.coil.find(c => c._id === coilID)
+    if (coil) {
+        coil.length = title
+        rerenderEntireTree()
+    }
 }
 
 export default store
